@@ -52,7 +52,7 @@ in Tab 1: MongoDB
 in Tab 2: MySQL  
 in Tab 3: Run Application  
 
-Work on environment: `workon firatarrega`
+Work on environment: `workon urgentestimar`
 
 __Step 3: Run MongoDB (Tab 1)__  
 Run mongodb: `mongod --dbpath /.../urGENTestimar/ddbb`
