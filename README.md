@@ -46,13 +46,13 @@ __Migrations__
 __Step 1: Run MySQL server__  
 Run MySQL: `mysql.server start`
 
-__Step 2: Open terminal tabs and work on the environment (in each terminal tab)__  
+__Step 2: Open terminal tabs and work on the environment__  
 
 in Tab 1: MongoDB  
 in Tab 2: MySQL  
 in Tab 3: Run Application  
 
-Work on environment: `workon urgentestimar`
+Work on environment (in each terminal tab): `workon urgentestimar`
 
 __Step 3: Run MongoDB (Tab 1)__  
 Run mongodb: `mongod --dbpath /.../urGENTestimar/ddbb`
