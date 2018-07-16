@@ -30,7 +30,7 @@ __MongoDB__
 ```mongod --dbpath /.../urGENTestimar/ddbb```
 
 __Load text__   
-File with text and translations:  `\...\urGENTestimar\game\i18n\translations.xlsx`  
+File with text and translations:  `/.../urGENTestimar/game/i18n/translations.xlsx`  
    
 ```python excel_to_mongodb.py```
 
