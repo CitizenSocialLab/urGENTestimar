@@ -1,6 +1,6 @@
-#README#
+# README #
 
-##CitizenSocialLab: urGENTestimar##
+## CitizenSocialLab: urGENTestimar ##
 
 Experiment designed and implemented to be performed in **FiraTarrega 2017** during the performance [urGENTestimar](https://www.firatarrega.cat/fira/programa/en_2017/33/urgentestimar).
 
@@ -8,10 +8,10 @@ This participatory experiment consist on a set of dilemmas and behavioural games
 
 More detailed information about the games will be available once the [scientific paper](http://), currently in preparation, will be published.
 
-##Configuration##
+## Configuration ##
 Steps are necessary to get urGENTestimar install, up and running in local network.
 
-###Creation of the project ###
+### Creation of the project ###
 
 __Database MySQL__  
 Create MySQL database: name\_db  
@@ -41,7 +41,7 @@ __Migrations__
 ```python manage.py makemigrations```  
 ```python manage.py migrate```  
 
-###Run project in Local ###
+### Run project in Local ###
 
 __Step 1: Run MySQL server__  
 Run MySQL: `mysql.server start`
@@ -76,12 +76,12 @@ __Step 6: Run Server (Tab 3)__
 Directory: `cd /.../urGENTestimar/ `   
 Runserver: `python manage.py runserver localhost:port`
 
-##Versions##
+## Versions ##
 Version 1.0
 
-##License##
+## License ##
 [CC BY-NC-SA license](https://creativecommons.org/licenses/by-nc-sa/4.0/)
 
-##Contact ##
+## Contact ##
 
 Julian Vicens: **julianvicens@gmail.com**
