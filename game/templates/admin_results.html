@@ -1,0 +1,318 @@
+{% extends "admin.html" %}
+
+
+{% block stylesheet %}
+    <link href="/static/css/admin.css" rel="stylesheet" media="screen">
+    <link href="/static/css/admin_results.css" rel="stylesheet" media="screen">
+{% endblock %}
+
+
+{% block content_admin %}
+
+    <div id="table_results1"></div>
+    <div id="table_results2"></div>
+
+
+{% endblock %}
+
+{% block javascript %}
+
+        <script>
+
+            function update_estat() {
+                $.ajax({
+                    url: '/es/ws/basic_analysis/',
+                    success: function(data) {
+
+                        console.log(data)
+                        ///// Prisoner 1
+
+                        var perc = 0
+
+                        $("#table_results1").empty();
+
+                        var table = '<table style="width=50%;">';
+                        table += "<tr style='cellpadding:10;'>";
+                        table += "<td style=font-size:16px;font-weight:bold;cell>Participants</td>";
+                        table += "</tr>";
+
+                        table += "<tr style='cellpadding:10;'>";
+                        table += "<td style=font-size:14px;font-weight:bold;cell>Number of participants</td>";
+                        table += "<td style=font-size:14px;cell;text-align: left>" + data.participants.number_of_participants +"</td>";
+                        table += "</tr>";
+
+                        table += "<tr style='cellpadding:10;'>";
+                        table += "<td style=font-size:14px;font-weight:bold;cell>From Tarrega</td>";
+                        perc = (data.participants.number_of_participants_from_tarrega/data.participants.number_of_participants)*100
+                        table += "<td style=font-size:14px;cell>" + data.participants.number_of_participants_from_tarrega + " ( "+parseFloat(perc).toFixed(0)+"% )"+"</td>";
+                        table += "</tr>";
+
+
+                        table += "<tr style='cellpadding:10;'>";
+                        table += "<td style=font-size:14px;font-weight:bold;cell>Outside Tarrega</td>";
+                        perc = (data.participants.number_of_participants_from_outside_tarrega/data.participants.number_of_participants)*100
+                        table += "<td style=font-size:14px;cell>" + data.participants.number_of_participants_from_outside_tarrega + " ( "+parseFloat(perc).toFixed(0)+"% )"+"</td>";
+                        table += "</tr>";
+
+                        table += "<tr style='cellpadding:10;'>";
+                        table += "<td style=font-size:16px;font-weight:bold;cell>Water</td>";
+                        table += "</tr>";
+
+                        table += "<tr style='cellpadding:10;'>";
+                        table += "<td style=font-size:14px;font-weight:bold;cell>Expected Cooperation</td>";
+                        perc = (data.water.cooperation_expected_water/(data.water.defection_expected_water+data.water.cooperation_expected_water))*100
+                        table += "<td style=font-size:14px;cell>" + data.water.cooperation_expected_water + " ( "+parseFloat(perc).toFixed(0)+"% )"+"</td>";
+                        table += "</tr>";
+
+
+                        table += "<tr style='cellpadding:10;'>";
+                        table += "<td style=font-size:14px;font-weight:bold;cell>Expected Defection</td>";
+                        perc = (data.water.defection_expected_water/(data.water.defection_expected_water+data.water.cooperation_expected_water))*100
+                        table += "<td style=font-size:14px;cell>" + data.water.defection_expected_water + " ( "+parseFloat(perc).toFixed(0)+"% )"+"</td>";
+                        table += "</tr>";
+
+
+                        table += "<tr style='cellpadding:10;'>";
+                        table += "<td style=font-size:14px;font-weight:bold;cell>Cooperation</td>";
+                        perc = (data.water.cooperation_water/(data.water.cooperation_water+data.water.defection_water))*100
+                        table += "<td style=font-size:14px;cell>" + data.water.cooperation_water + " ( "+parseFloat(perc).toFixed(0)+"% )"+"</td>";
+                        table += "</tr>";
+
+
+                        table += "<tr style='cellpadding:10;'>";
+                        table += "<td style=font-size:14px;font-weight:bold;cell>Defection</td>";
+                        perc = (data.water.defection_water/(data.water.cooperation_water+data.water.defection_water))*100
+                        table += "<td style=font-size:14px;cell>" + data.water.defection_water + " ( "+parseFloat(perc).toFixed(0)+"% )"+"</td>";
+                        table += "</tr>";
+
+                        table += "<tr style='cellpadding:10;'>";
+                        table += "<td style=font-size:16px;font-weight:bold;cell>Food</td>";
+                        table += "</tr>";
+
+                        table += "<tr style='cellpadding:10;'>";
+                        table += "<td style=font-size:14px;font-weight:bold;cell>Expected Cooperation</td>";
+                        perc = (data.food.cooperation_expected_food/(data.food.defection_expected_food+data.food.cooperation_expected_food))*100
+                        table += "<td style=font-size:14px;cell>" + data.food.cooperation_expected_food + " ( "+parseFloat(perc).toFixed(0)+"% )"+"</td>";
+                        table += "</tr>";
+
+
+                        table += "<tr style='cellpadding:10;'>";
+                        table += "<td style=font-size:14px;font-weight:bold;cell>Expected Defection</td>";
+                        perc = (data.food.defection_expected_food/(data.food.defection_expected_food+data.food.cooperation_expected_food))*100
+                        table += "<td style=font-size:14px;cell>" + data.food.defection_expected_food + " ( "+parseFloat(perc).toFixed(0)+"% )"+"</td>";
+                        table += "</tr>";
+
+
+                        table += "<tr style='cellpadding:10;'>";
+                        table += "<td style=font-size:14px;font-weight:bold;cell>Cooperation</td>";
+                        perc = (data.food.cooperation_food/(data.food.cooperation_food+data.food.defection_food))*100
+                        table += "<td style=font-size:14px;cell>" + data.food.cooperation_food + " ( "+parseFloat(perc).toFixed(0)+"% )"+"</td>";
+                        table += "</tr>";
+
+
+                        table += "<tr style='cellpadding:10;'>";
+                        table += "<td style=font-size:14px;font-weight:bold;cell>Defection</td>";
+                        perc = (data.food.defection_food/(data.food.cooperation_food+data.food.defection_food))*100
+                        table += "<td style=font-size:14px;cell>" + data.food.defection_food + " ( "+parseFloat(perc).toFixed(0)+"% )"+"</td>";
+                        table += "</tr>";
+
+                        table += "<tr style='cellpadding:10;'>";
+                        table += "<td style=font-size:16px;font-weight:bold;cell>Kiss</td>";
+                        table += "</tr>";
+
+                        table += "<tr style='cellpadding:10;'>";
+                        table += "<td style=font-size:14px;font-weight:bold;cell>Kiss</td>";
+                        perc = (data.kiss.kiss/(data.kiss.kiss+data.kiss.cheek))*100
+                        table += "<td style=font-size:14px;cell>" + data.kiss.kiss + " ( "+parseFloat(perc).toFixed(0)+"% )"+"</td>";
+                        table += "</tr>";
+
+
+                        table += "<tr style='cellpadding:10;'>";
+                        table += "<td style=font-size:14px;font-weight:bold;cell>Cheek</td>";
+                        perc = (data.kiss.cheek/(data.kiss.kiss+data.kiss.cheek))*100
+                        table += "<td style=font-size:14px;cell>" + data.kiss.cheek + " ( "+parseFloat(perc).toFixed(0)+"% )"+"</td>";
+                        table += "</tr>";
+
+                        table += "<tr style='cellpadding:10;'>";
+                        table += "<td style=font-size:16px;font-weight:bold;cell>Fruit</td>";
+                        table += "</tr>";
+
+                        table += "<tr style='cellpadding:10;'>";
+                        table += "<td style=font-size:14px;font-weight:bold;cell>Give All</td>";
+                        perc = (data.fruit.give_all/(data.fruit.give_all+data.fruit.splits+data.fruit.give_nothing))*100
+                        table += "<td style=font-size:14px;cell>" + data.fruit.give_all + " ( "+parseFloat(perc).toFixed(0)+"% )"+"</td>";
+                        table += "</tr>";
+
+                        table += "<tr style='cellpadding:10;'>";
+                        table += "<td style=font-size:14px;font-weight:bold;cell>Split</td>";
+                        perc = (data.fruit.splits/(data.fruit.give_all+data.fruit.splits+data.fruit.give_nothing))*100
+                        table += "<td style=font-size:14px;cell>" + data.fruit.splits + " ( "+parseFloat(perc).toFixed(0)+"% )"+"</td>";
+                        table += "</tr>";
+
+                        table += "<tr style='cellpadding:10;'>";
+                        table += "<td style=font-size:14px;font-weight:bold;cell>Give Nothing</td>";
+                        perc = (data.fruit.give_nothing/(data.fruit.give_all+data.fruit.splits+data.fruit.give_nothing))*100
+                        table += "<td style=font-size:14px;cell>" + data.fruit.give_nothing + " ( "+parseFloat(perc).toFixed(0)+"% )"+"</td>";
+                        table += "</tr>";
+
+
+
+
+                        $("#table_results1").append(table);
+
+
+
+                        $("#table_results2").empty();
+                        var table = '<table style="width=50%;">';
+
+                        table += "<tr style='cellpadding:10;'>";
+                        table += "<td style=font-size:16px;font-weight:bold;cell>Water</td>";
+                        table += "</tr>";
+
+                        table += "<tr style='cellpadding:10;'>";
+                        table += "<td style=font-size:14px;font-weight:bold;cell>Are you concerned about water?</td>";
+                        table += "</tr>";
+
+                        table += "<tr style='cellpadding:10;'>";
+                        perc = (data.water.worried_about_water/(data.water.worried_about_water+data.water.not_worried_about_water))*100
+                        table += "<td style=font-size:14px;cell> Yes: " + data.water.worried_about_water + " ( "+parseFloat(perc).toFixed(0)+"% )"+"</td>";
+                        table += "</tr>";
+
+                        table += "<tr style='cellpadding:10;'>";
+                        perc = (data.water.not_worried_about_water/(data.water.worried_about_water+data.water.not_worried_about_water))*100
+                        table += "<td style=font-size:14px;cell> No: " + data.water.not_worried_about_water + " ( "+parseFloat(perc).toFixed(0)+"% )"+"</td>";
+                        table += "</tr>";
+
+                        table += "<tr style='cellpadding:10;'>";
+                        table += "<td style=font-size:14px;font-weight:bold;cell>Do you think that everybody has the right to water?</td>";
+                        table += "</tr>";
+
+                        table += "<tr style='cellpadding:10;'>";
+                        perc = (data.water.right_to_water/(data.water.right_to_water+data.water.not_right_to_water))*100
+                        table += "<td style=font-size:14px;cell> Yes: " + data.water.right_to_water + " ( "+parseFloat(perc).toFixed(0)+"% )"+"</td>";
+                        table += "</tr>";
+
+                        table += "<tr style='cellpadding:10;'>";
+                        perc = (data.water.not_right_to_water/(data.water.right_to_water+data.water.not_right_to_water))*100
+                        table += "<td style=font-size:14px;cell> No: " + data.water.not_right_to_water + " ( "+parseFloat(perc).toFixed(0)+"% )"+"</td>";
+                        table += "</tr>";
+
+                        table += "<tr style='cellpadding:10;'>";
+                        table += "<td style=font-size:16px;font-weight:bold;cell>Food</td>";
+                        table += "</tr>";
+
+
+                        table += "<tr style='cellpadding:10;'>";
+                        table += "<td style=font-size:14px;font-weight:bold;cell>Are you concerned about bread?</td>";
+                        table += "</tr>";
+
+                        table += "<tr style='cellpadding:10;'>";
+                        perc = (data.food.worried_about_food/(data.food.worried_about_food+data.food.not_worried_about_food))*100
+                        table += "<td style=font-size:14px;cell> Yes: " + data.food.worried_about_food + " ( "+parseFloat(perc).toFixed(0)+"% )"+"</td>";
+                        table += "</tr>";
+
+                        table += "<tr style='cellpadding:10;'>";
+                        perc = (data.food.not_worried_about_food/(data.food.worried_about_food+data.food.not_worried_about_food))*100
+                        table += "<td style=font-size:14px;cell> No: " + data.food.not_worried_about_food + " ( "+parseFloat(perc).toFixed(0)+"% )"+"</td>";
+                        table += "</tr>";
+
+                        table += "<tr style='cellpadding:10;'>";
+                        table += "<td style=font-size:14px;font-weight:bold;cell>To cook is to love?</td>";
+                        table += "</tr>";
+
+                        table += "<tr style='cellpadding:10;'>";
+                        perc = (data.food.cook_is_love/(data.food.cook_is_love+data.food.cook_is_not_love))*100
+                        table += "<td style=font-size:14px;cell> Yes: " + data.food.cook_is_love + " ( "+parseFloat(perc).toFixed(0)+"% )"+"</td>";
+                        table += "</tr>";
+
+                        table += "<tr style='cellpadding:10;'>";
+                        perc = (data.food.cook_is_not_love/(data.food.cook_is_love+data.food.cook_is_not_love))*100
+                        table += "<td style=font-size:14px;cell> No: " + data.food.cook_is_not_love + " ( "+parseFloat(perc).toFixed(0)+"% )"+"</td>";
+                        table += "</tr>";
+
+                        table += "<tr style='cellpadding:10;'>";
+                        table += "<td style=font-size:14px;font-weight:bold;cell>Did you enjoy staring at the eyes of the other person?</td>";
+                        table += "</tr>";
+
+                        table += "<tr style='cellpadding:10;'>";
+                        perc = (data.food.staring_eyes/(data.food.staring_eyes+data.food.not_staring_eyes))*100
+                        table += "<td style=font-size:14px;cell> Yes: " + data.food.staring_eyes + " ( "+parseFloat(perc).toFixed(0)+"% )"+"</td>";
+                        table += "</tr>";
+
+                        table += "<tr style='cellpadding:10;'>";
+                        perc = (data.food.not_staring_eyes/(data.food.staring_eyes+data.food.not_staring_eyes))*100
+                        table += "<td style=font-size:14px;cell> No: " + data.food.not_staring_eyes + " ( "+parseFloat(perc).toFixed(0)+"% )"+"</td>";
+                        table += "</tr>";
+
+                        table += "<tr style='cellpadding:10;'>";
+                        table += "<td style=font-size:16px;font-weight:bold;cell>Kiss</td>";
+                        table += "</tr>";
+
+                        table += "<tr style='cellpadding:10;'>";
+                        table += "<td style=font-size:14px;font-weight:bold;cell>Are you taking care of yourself?</td>";
+                        table += "</tr>";
+
+                        table += "<tr style='cellpadding:10;'>";
+                        perc = (data.kiss.take_care/(data.kiss.take_care+data.kiss.not_take_care))*100
+                        table += "<td style=font-size:14px;cell> Yes: " + data.kiss.take_care + " ( "+parseFloat(perc).toFixed(0)+"% )"+"</td>";
+                        table += "</tr>";
+
+                        table += "<tr style='cellpadding:10;'>";
+                        perc = (data.kiss.not_take_care/(data.kiss.take_care+data.kiss.not_take_care))*100
+                        table += "<td style=font-size:14px;cell> No: " + data.kiss.not_take_care + " ( "+parseFloat(perc).toFixed(0)+"% )"+"</td>";
+                        table += "</tr>";
+
+                        table += "<tr style='cellpadding:10;'>";
+                        table += "<td style=font-size:16px;font-weight:bold;cell>Fruit</td>";
+                        table += "</tr>";
+
+                        table += "<tr style='cellpadding:10;'>";
+                        table += "<td style=font-size:14px;font-weight:bold;cell>Do you want a piece of fruit?</td>";
+                        table += "</tr>";
+
+                        table += "<tr style='cellpadding:10;'>";
+                        perc = (data.fruit.want_fruit/(data.fruit.want_fruit+data.fruit.not_want_fruit))*100
+                        table += "<td style=font-size:14px;cell> Yes: " + data.fruit.want_fruit + " ( "+parseFloat(perc).toFixed(0)+"% )"+"</td>";
+                        table += "</tr>";
+
+                        table += "<tr style='cellpadding:10;'>";
+                        perc = (data.fruit.not_want_fruit/(data.fruit.want_fruit+data.fruit.not_want_fruit))*100
+                        table += "<td style=font-size:14px;cell> No: " + data.fruit.not_want_fruit + " ( "+parseFloat(perc).toFixed(0)+"% )"+"</td>";
+                        table += "</tr>";
+
+                        table += "<tr style='cellpadding:10;'>";
+                        table += "<td style=font-size:14px;font-weight:bold;cell>Are you afraid of been homeless?</td>";
+                        table += "</tr>";
+
+                        table += "<tr style='cellpadding:10;'>";
+                        perc = (data.fruit.homeless/(data.fruit.homeless+data.fruit.not_homeless))*100
+                        table += "<td style=font-size:14px;cell> Yes: " + data.fruit.homeless + " ( "+parseFloat(perc).toFixed(0)+"% )"+"</td>";
+                        table += "</tr>";
+
+                        table += "<tr style='cellpadding:10;'>";
+                        perc = (data.fruit.not_homeless/(data.fruit.homeless+data.fruit.not_homeless))*100
+                        table += "<td style=font-size:14px;cell> No: " + data.fruit.not_homeless + " ( "+parseFloat(perc).toFixed(0)+"% )"+"</td>";
+                        table += "</tr>";
+
+
+
+
+                        $("#table_results2").append(table);
+                        
+
+
+
+                        setTimeout(function(){update_estat()}, 500);
+                    },
+                    error: function(data) {
+                        setTimeout(function(){update_estat()}, 500);
+                    }
+                });
+            }
+
+            $(document).ready(function() {
+                update_estat();
+            });
+        </script>
+
+{% endblock %}

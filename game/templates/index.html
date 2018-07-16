@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block title %}{% endblock %}
+
+{% block stylesheet %}
+    <link href="/static/css/index.css" rel="stylesheet" media="screen">
+{% endblock %}
+
+{% block content %}
+    <div class="topdiv">
+
+        <div class="fons"></div>
+
+
+        <div class="text-benvinguda">
+        </div>
+        <div class="text-benvinguda2">
+        </div>
+
+        <button name="joc1" id="01" class="bx bx-option boto_joc_1" onClick="touched(this.id)" value="joc1"></button>
+
+        <button name="joc2" id="02" class="bx bx-option boto_joc_2" onClick="touched(this.id)" value="joc2"></button>
+
+        <button name="joc3" id="03" class="bx bx-option boto_joc_3" onClick="touched(this.id)" value="joc3"></button>
+
+        <button name="joc4" id="04" class="bx bx-option boto_joc_4" onClick="touched(this.id)" value="joc4"></button>-->
+        <!--<img id="imatge_logos" src="/static/img/logos/all_logos.png"/>-->
+
+
+    </div>
+
+{% endblock %}
+
+{% block javascript %}
+    <script>
+        $("a").click(function (event) {
+            event.preventDefault();
+            window.location = $(this).attr("href");
+        });
+
+        function touched(joc_id) {
+            console.log(joc_id)
+            $.ajax({
+                url: '/es/ws/enviar_joc/' + joc_id + '/',
+                success: function (data) {
+                    console.log(data);
+                    if (data.joc_saved == "Ok"){
+                        window.location.href = '/'+ '{{ lang }}' + '/game/presentacio';
+                    }else{
+                        console.log("Error");
+                    }
+                }
+            });
+        }
+
+    </script>
+
+{% endblock %}

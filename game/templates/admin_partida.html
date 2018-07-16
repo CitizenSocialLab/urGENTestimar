@@ -1,0 +1,463 @@
+{% extends "admin.html" %}
+
+
+{% block stylesheet %}
+    <link href="/static/css/admin.css" rel="stylesheet" media="screen">
+    <link href="/static/css/admin_partida.css" rel="stylesheet" media="screen">
+{% endblock %}
+
+
+{% block content_admin %}
+
+    <div id="table_prisoner1"></div>
+    <div id="table_prisoner2"></div>
+    <div id="table_dictator1"></div>
+    <div id="table_dictator2"hidden=""></div>
+    <div id="table_snowdrift1"></div>
+    <div class="page_button_right"> <button class="bx bx-push bx-redstencil" type="button" onclick="partida_list()" name="list">List Games</button></div>
+
+
+{% endblock %}
+
+{% block javascript %}
+
+        <script>
+
+            function partida_list() {
+                window.location.href = '/es/admin/partida_list'
+            }
+
+            function tancarPartida(num_partida) {
+                //console.log("Tancant partida " + num_partida);
+                $.ajax({
+                    url: '/es/ws/tancar_partida/'+num_partida+'/'
+                });
+            }
+
+            function tancarRonda(num_partida) {
+                //console.log("Tancant ronda " + num_partida);
+                $.ajax({
+                    url: '/es/ws/tancar_ronda/'+num_partida+'/'
+                });
+            }
+
+            function detailPartida(num_partida) {
+                window.location.href = '/es/admin/partida_detail/'+num_partida+'/'
+            }
+
+            function update_estat() {
+                $.ajax({
+                    url: '/es/ws/estat_partida/',
+                    success: function(data) {
+
+
+                        ///// Prisoner 1
+
+                        $("#table_prisoner1").empty();
+
+                        var table = '<table style="width=50%;">';
+                        table += "<tr style='cellpadding:10;'>";
+                        table += "<td colspan=8 style=font-size:16px;font-weight:bold;cell>Water</td>";
+                        table += "</tr>";
+
+                        if (data.partides_actives_pd1.length != 0) {
+
+                            table += "<tr style='cellpadding:10;'>";
+                            table += "<td style=font-size:14px;font-weight:bold;cell>id</td>";
+                            table += "<td style=font-size:14px;font-weight:bold;cell>estat</td>";
+                            table += "<td style=font-size:14px;font-weight:bold;cell>dia</td>";
+                            table += "<td style=font-size:14px;font-weight:bold;cell>creacio</td>";
+                            table += "<td style=font-size:14px;font-weight:bold;cell>inici</td>";
+                            table += "<td style=font-size:14px;font-weight:bold;cell>fin</td>";
+                            table += "<td style=font-size:14px;font-weight:bold;cell># users</td>";
+                            table += "<td style=font-size:14px;font-weight:bold;cell>users</td>";
+                            table += "</tr>";
+
+                            for (var i = 0; i < data.partides_actives_pd1.length; i++) {
+                                table += "<tr style='cellpadding:10;'>";
+                                table += "<td style=font-size:12px;font-weight:bold;color:navy;cell>" + data.partides_actives_pd1[i].id + "</td>";
+                                table += "<td style=font-size:12px;cell;font-weight:bold;color:navy;cell>" + data.partides_actives_pd1[i].estat + "</td>";
+                                table += "<td style=font-size:12px;cell>" + data.partides_actives_pd1[i].dia + "</td>";
+                                table += "<td style=font-size:12px;cell>" + data.partides_actives_pd1[i].data_creacio + "</td>";
+                                table += "<td style=font-size:12px;cell>" + data.partides_actives_pd1[i].data_inicialitzacio + "</td>";
+                                table += "<td style=font-size:12px;cell>" + data.partides_actives_pd1[i].data_finalitzacio + "</td>";
+                                table += "<td style=font-size:12px;font-weight:bold;color:navy;cell>" + data.partides_actives_pd1[i].usuaris_registrats + "</td>";
+                                table += "<td style=font-size:12px;font-weight:bold;color:navy;cell>" + data.partides_actives_pd1[i].users + "</td>";
+                                table += '<td><button onclick="detailPartida(' + data.partides_actives_pd1[i].id + ')" class="bx-push bx bx-redstencil" style="width:30px;height:30px;font-size:14px;padding:0px 0px 0px 0px;">' + "i" + '</button></td>'
+                                table += "</tr>";
+                                if (data.partides_actives_pd1[i].usuaris_registrats > data.partides_actives_pd1[i].users.length
+                                        && data.partides_actives_pd1[i].estat == "JUGANT"
+                                        && data.partides_actives_pd1[i].users.length > 0) {
+                                    table += "<tr style='cellpadding:10;'>";
+                                    table += "<td colspan=8 style=font-size:12px;font-weight:bold;color:red;cell>201: Acabant la partida, falta un usuari per abandonar la partida</td>";
+                                    table += "</tr>";
+                                }
+                                if (data.partides_actives_pd1[i].usuaris_registrats > data.partides_actives_pd1[i].users.length
+                                        && data.partides_actives_pd1[i].estat == "JUGANT"
+                                        && data.partides_actives_pd1[i].users.length == 0) {
+                                    table += "<tr style='cellpadding:10;'>";
+                                    table += "<td colspan=8 style=font-size:12px;font-weight:bold;color:red;cell>203: No hi ha cap usuari actiu a la partida</td>";
+                                    table += "</tr>";
+                                }
+
+                            }
+
+                            if (data.partides_actives_pd1.length > 1) {
+                                table += "<tr style='cellpadding:10;'>";
+                                table += "<td colspan=8 style=font-size:12px;font-weight:bold;color:red;cell>202: Hi ha massa partides actives a l’hora.</td>";
+                                table += "</tr>";
+                            }
+
+                        } else {
+                            table += "<tr style='cellpadding:10;'>";
+                            table += "<td colspan=8 style=font-size:12px;font-weight:bold;cell>NO HI HA PARTIDES ACTIVES</td>";
+                            table += "</tr>";
+                        }
+
+                        if (data.darrera_partida_acabada_pd1.error == 'no_games') {
+                            var text = '-'
+                        } else {
+                            var text = 'Darrera: '
+                                    + data.darrera_partida_acabada_pd1.dia + ', '
+                                    + data.darrera_partida_acabada_pd1.data_finalitzacio + '. '
+                                    + data.darrera_partida_acabada_pd1.usuaris_registrats + ' usuaris'
+                                    + ' (' + data.darrera_partida_acabada_pd1.users + ')'
+                        }
+                        table += "<tr style='cellpadding:10;'>";
+                        table += "<td colspan=8 style=font-size:12px;cell>" + text + "</td>";
+                        table += "</tr>";
+
+
+                        $("#table_prisoner1").append(table);
+
+                        ///// Prisoner 2
+
+                        $("#table_prisoner2").empty();
+                        var table = '<table style="width=50%;">';
+                        table += "<tr style='cellpadding:10;'>";
+                        table += "<td colspan=8 style=font-size:16px;font-weight:bold;cell>Bread</td>";
+                        table += "</tr>";
+
+                        if (data.partides_actives_pd2.length != 0) {
+
+                            table += "<tr style='cellpadding:10;'>";
+                            table += "<td style=font-size:14px;font-weight:bold;cell>id</td>";
+                            table += "<td style=font-size:14px;font-weight:bold;cell>estat</td>";
+                            table += "<td style=font-size:14px;font-weight:bold;cell>dia</td>";
+                            table += "<td style=font-size:14px;font-weight:bold;cell>creacio</td>";
+                            table += "<td style=font-size:14px;font-weight:bold;cell>inici</td>";
+                            table += "<td style=font-size:14px;font-weight:bold;cell>fin</td>";
+                            table += "<td style=font-size:14px;font-weight:bold;cell># users</td>";
+                            table += "<td style=font-size:14px;font-weight:bold;cell>users</td>";
+                            table += "</tr>";
+
+                            for (var i = 0; i < data.partides_actives_pd2.length; i++) {
+                                table += "<tr style='cellpadding:10;'>";
+                                table += "<td style=font-size:12px;font-weight:bold;color:navy;cell>" + data.partides_actives_pd2[i].id + "</td>";
+                                table += "<td style=font-size:12px;cell;font-weight:bold;color:navy;cell>" + data.partides_actives_pd2[i].estat + "</td>";
+                                table += "<td style=font-size:12px;cell>" + data.partides_actives_pd2[i].dia + "</td>";
+                                table += "<td style=font-size:12px;cell>" + data.partides_actives_pd2[i].data_creacio + "</td>";
+                                table += "<td style=font-size:12px;cell>" + data.partides_actives_pd2[i].data_inicialitzacio + "</td>";
+                                table += "<td style=font-size:12px;cell>" + data.partides_actives_pd2[i].data_finalitzacio + "</td>";
+                                table += "<td style=font-size:12px;font-weight:bold;color:navy;cell>" + data.partides_actives_pd2[i].usuaris_registrats + "</td>";
+                                table += "<td style=font-size:12px;font-weight:bold;color:navy;cell>" + data.partides_actives_pd2[i].users + "</td>";
+                                table += '<td><button onclick="detailPartida(' + data.partides_actives_pd2[i].id + ')" class="bx-push bx bx-redstencil" style="width:30px;height:30px;font-size:14px;padding:0px 0px 0px 0px;">' + "i" + '</button></td>'
+                                table += "</tr>";
+
+                                if (data.partides_actives_pd2[i].usuaris_registrats > data.partides_actives_pd2[i].users.length
+                                        && data.partides_actives_pd2[i].estat == "JUGANT"
+                                        && data.partides_actives_pd2[i].users.length > 0) {
+                                    table += "<tr style='cellpadding:10;'>";
+                                    table += "<td colspan=8 style=font-size:12px;font-weight:bold;color:red;cell>201: Acabant la partida, falta un usuari per abandonar la partida</td>";
+                                    table += "</tr>";
+                                }
+                                if (data.partides_actives_pd2[i].usuaris_registrats > data.partides_actives_pd2[i].users.length
+                                        && data.partides_actives_pd2[i].estat == "JUGANT"
+                                        && data.partides_actives_pd2[i].users.length == 0) {
+                                    table += "<tr style='cellpadding:10;'>";
+                                    table += "<td colspan=8 style=font-size:12px;font-weight:bold;color:red;cell>203: No hi ha cap usuari actiu a la partida</td>";
+                                    table += "</tr>";
+                                }
+
+                            }
+
+                            if (data.partides_actives_pd2.length > 1) {
+                                table += "<tr style='cellpadding:10;'>";
+                                table += "<td colspan=8 style=font-size:12px;font-weight:bold;color:red;cell>202: Hi ha massa partides actives a l’hora.</td>";
+                                table += "</tr>";
+                            }
+
+
+                        } else {
+                            table += "<tr style='cellpadding:10;'>";
+                            table += "<td colspan=8 style=font-size:12px;font-weight:bold;cell>NO HI HA PARTIDES ACTIVES</td>";
+                            table += "</tr>";
+                        }
+
+                        if (data.darrera_partida_acabada_pd2.error == 'no_games') {
+                            var text = '-'
+                        } else {
+
+                            var text = 'Darrera: '
+                                    + data.darrera_partida_acabada_pd2.dia + ', '
+                                    + data.darrera_partida_acabada_pd2.data_finalitzacio + '. '
+                                    + data.darrera_partida_acabada_pd2.usuaris_registrats + ' usuaris'
+                                    + ' (' + data.darrera_partida_acabada_pd2.users + ')'
+                        }
+                        table += "<tr style='cellpadding:10;'>";
+                        table += "<td colspan=8 style=font-size:12px;cell>" + text + "</td>";
+                        table += "</tr>";
+
+                        $("#table_prisoner2").append(table);
+
+                        ///// Dictator 1
+
+                        $("#table_dictator1").empty();
+                        var table = '<table style="width=50%;">';
+                        table += "<tr style='cellpadding:10;'>";
+                        table += "<td colspan=8 style=font-size:16px;font-weight:bold;cell>Fruits</td>";
+                        table += "</tr>";
+
+                        if (data.partides_actives_dg1.length != 0) {
+
+                            table += "<tr style='cellpadding:10;'>";
+                            table += "<td style=font-size:14px;font-weight:bold;cell>id</td>";
+                            table += "<td style=font-size:14px;font-weight:bold;cell>estat</td>";
+                            table += "<td style=font-size:14px;font-weight:bold;cell>dia</td>";
+                            table += "<td style=font-size:14px;font-weight:bold;cell>creacio</td>";
+                            table += "<td style=font-size:14px;font-weight:bold;cell>inici</td>";
+                            table += "<td style=font-size:14px;font-weight:bold;cell>fin</td>";
+                            table += "<td style=font-size:14px;font-weight:bold;cell># users</td>";
+                            table += "<td style=font-size:14px;font-weight:bold;cell>users</td>";
+                            table += "</tr>";
+
+                            for (var i = 0; i < data.partides_actives_dg1.length; i++) {
+                                table += "<tr style='cellpadding:10;'>";
+                                table += "<td style=font-size:12px;font-weight:bold;color:navy;cell>" + data.partides_actives_dg1[i].id + "</td>";
+                                table += "<td style=font-size:12px;font-weight:bold;color:navy;cell>" + data.partides_actives_dg1[i].estat + "</td>";
+                                table += "<td style=font-size:12px;cell>" + data.partides_actives_dg1[i].dia + "</td>";
+                                table += "<td style=font-size:12px;cell>" + data.partides_actives_dg1[i].data_creacio + "</td>";
+                                table += "<td style=font-size:12px;cell>" + data.partides_actives_dg1[i].data_inicialitzacio + "</td>";
+                                table += "<td style=font-size:12px;cell>" + data.partides_actives_dg1[i].data_finalitzacio + "</td>";
+                                table += "<td style=font-size:12px;cell;font-weight:bold;color:navy;cell>" + data.partides_actives_dg1[i].usuaris_registrats + "</td>";
+                                table += "<td style=font-size:12px;font-weight:bold;color:navy;cell>" + data.partides_actives_dg1[i].users + "</td>";
+                                table += '<td><button onclick="detailPartida(' + data.partides_actives_dg1[i].id + ')" class="bx-push bx bx-redstencil" style="width:30px;height:30px;font-size:14px;padding:0px 0px 0px 0px;">' + "i" + '</button></td>'
+                                table += "</tr>";
+                                if (data.partides_actives_dg1[i].usuaris_registrats > data.partides_actives_dg1[i].users.length
+                                        && data.partides_actives_dg1[i].estat == "JUGANT"
+                                        && data.partides_actives_dg1[i].users.length > 0) {
+                                    table += "<tr style='cellpadding:10;'>";
+                                    table += "<td colspan=8 style=font-size:12px;font-weight:bold;color:red;cell>201: Acabant la partida, falta un usuari per abandonar la partida</td>";
+                                    table += "</tr>";
+                                }
+                                if (data.partides_actives_dg1[i].usuaris_registrats > data.partides_actives_dg1[i].users.length
+                                        && data.partides_actives_dg1[i].estat == "JUGANT"
+                                        && data.partides_actives_dg1[i].users.length == 0) {
+                                    table += "<tr style='cellpadding:10;'>";
+                                    table += "<td colspan=8 style=font-size:12px;font-weight:bold;color:red;cell>203: No hi ha cap usuari actiu a la partida</td>";
+                                    table += "</tr>";
+                                }
+
+                            }
+
+                            if (data.partides_actives_dg1.length > 1) {
+                                table += "<tr style='cellpadding:10;'>";
+                                table += "<td colspan=8 style=font-size:12px;font-weight:bold;color:red;cell>202: Hi ha massa partides actives a l’hora.</td>";
+                                table += "</tr>";
+                            }
+
+                        } else {
+                            table += "<tr style='cellpadding:10;'>";
+                            table += "<td colspan=8 style=font-size:12px;font-weight:bold;cell>NO HI HA PARTIDES ACTIVES</td>";
+                            table += "</tr>";
+                        }
+
+                        if (data.darrera_partida_acabada_dg1.error == 'no_games') {
+                            var text = '-'
+                        } else {
+                            var text = 'Darrera: '
+                                    + data.darrera_partida_acabada_dg1.dia + ', '
+                                    + data.darrera_partida_acabada_dg1.data_finalitzacio + '. '
+                                    + data.darrera_partida_acabada_dg1.usuaris_registrats + ' usuaris'
+                                    + ' (' + data.darrera_partida_acabada_dg1.users + ')'
+                        }
+                        table += "<tr style='cellpadding:10;'>";
+                        table += "<td colspan=8 style=font-size:12px;cell>" + text + "</td>";
+                        table += "</tr>";
+
+                        $("#table_dictator1").append(table);
+
+
+                        ///// Dictator 2
+
+                        $("#table_dictator2").empty();
+                        var table = '<table style="width=50%;">';
+                        table += "<tr style='cellpadding:10;'>";
+                        table += "<td colspan=8 style=font-size:16px;font-weight:bold;cell>Dictator 2</td>";
+                        table += "</tr>";
+
+                        if (data.partides_actives_dg2.length != 0) {
+
+                            table += "<tr style='cellpadding:10;'>";
+                            table += "<td style=font-size:14px;font-weight:bold;cell>id</td>";
+                            table += "<td style=font-size:14px;font-weight:bold;cell>estat</td>";
+                            table += "<td style=font-size:14px;font-weight:bold;cell>dia</td>";
+                            table += "<td style=font-size:14px;font-weight:bold;cell>creacio</td>";
+                            table += "<td style=font-size:14px;font-weight:bold;cell>inici</td>";
+                            table += "<td style=font-size:14px;font-weight:bold;cell>fin</td>";
+                            table += "<td style=font-size:14px;font-weight:bold;cell># users</td>";
+                            table += "<td style=font-size:14px;font-weight:bold;cell>users</td>";
+                            table += "</tr>";
+
+                            for (var i = 0; i < data.partides_actives_dg2.length; i++) {
+                                table += "<tr style='cellpadding:8;'>";
+                                table += "<td style=font-size:12px;font-weight:bold;color:navy;cell>" + data.partides_actives_dg2[i].id + "</td>";
+                                table += "<td style=font-size:12px;font-weight:bold;color:navy;cell>" + data.partides_actives_dg2[i].estat + "</td>";
+                                table += "<td style=font-size:12px;cell>" + data.partides_actives_dg2[i].dia + "</td>";
+                                table += "<td style=font-size:12px;cell>" + data.partides_actives_dg2[i].data_creacio + "</td>";
+                                table += "<td style=font-size:12px;cell>" + data.partides_actives_dg2[i].data_inicialitzacio + "</td>";
+                                table += "<td style=font-size:12px;cell>" + data.partides_actives_dg2[i].data_finalitzacio + "</td>";
+                                table += "<td style=font-size:12px;cell;font-weight:bold;color:navy;cell>" + data.partides_actives_dg2[i].usuaris_registrats + "</td>";
+                                table += "<td style=font-size:12px;font-weight:bold;color:navy;cell>" + data.partides_actives_dg2[i].users + "</td>";
+                                table += '<td><button onclick="detailPartida(' + data.partides_actives_dg2[i].id + ')" class="bx-push bx bx-redstencil" style="width:30px;height:30px;font-size:14px;padding:0px 0px 0px 0px;">' + "i" + '</button></td>'
+                                table += "</tr>";
+                                if (data.partides_actives_dg2[i].usuaris_registrats > data.partides_actives_dg2[i].users.length
+                                        && data.partides_actives_dg2[i].estat == "JUGANT"
+                                        && data.partides_actives_dg2[i].users.length > 0) {
+                                    table += "<tr style='cellpadding:10;'>";
+                                    table += "<td colspan=8 style=font-size:12px;font-weight:bold;color:red;cell>201: Acabant la partida, falta un usuari per abandonar la partida</td>";
+                                    table += "</tr>";
+                                }
+                                if (data.partides_actives_dg2[i].usuaris_registrats > data.partides_actives_dg2[i].users.length
+                                        && data.partides_actives_dg2[i].estat == "JUGANT"
+                                        && data.partides_actives_dg2[i].users.length == 0) {
+                                    table += "<tr style='cellpadding:10;'>";
+                                    table += "<td colspan=8 style=font-size:12px;font-weight:bold;color:red;cell>203: No hi ha cap usuari actiu a la partida</td>";
+                                    table += "</tr>";
+                                }
+
+                            }
+
+                            if (data.partides_actives_dg2.length > 1) {
+                                table += "<tr style='cellpadding:10;'>";
+                                table += "<td colspan=8 style=font-size:12px;font-weight:bold;color:red;cell>202: Hi ha massa partides actives a l’hora.</td>";
+                                table += "</tr>";
+                            }
+
+                        } else {
+                            table += "<tr style='cellpadding:10;'>";
+                            table += "<td colspan=8 style=font-size:12px;font-weight:bold;cell>NO HI HA PARTIDES ACTIVES</td>";
+                            table += "</tr>";
+                        }
+
+                        if (data.darrera_partida_acabada_dg2.error == 'no_games') {
+                            var text = '-'
+                        } else {
+                            var text = 'Darrera: '
+                                    + data.darrera_partida_acabada_dg2.dia + ', '
+                                    + data.darrera_partida_acabada_dg2.data_finalitzacio + '. '
+                                    + data.darrera_partida_acabada_dg2.usuaris_registrats + ' usuaris'
+                                    + ' (' + data.darrera_partida_acabada_dg2.users + ')'
+                        }
+                        table += "<tr style='cellpadding:10;'>";
+                        table += "<td colspan=8 style=font-size:12px;cell>" + text + "</td>";
+                        table += "</tr>";
+
+
+                        $("#table_dictator2").append(table );
+                        
+                        
+                        ///// Snowdrift 1
+
+                        $("#table_snowdrift1").empty();
+                        var table = '<table style="width=50%;">';
+                        table+="<tr style='cellpadding:10;'>";
+                        table+="<td colspan=8 style=font-size:16px;font-weight:bold;cell>Kiss</td>";
+                        table+="</tr>";
+
+                        if (data.partides_actives_sw1.length != 0) {
+
+                            table += "<tr style='cellpadding:10;'>";
+                            table += "<td style=font-size:14px;font-weight:bold;cell>id</td>";
+                            table += "<td style=font-size:14px;font-weight:bold;cell>estat</td>";
+                            table += "<td style=font-size:14px;font-weight:bold;cell>dia</td>";
+                            table += "<td style=font-size:14px;font-weight:bold;cell>creacio</td>";
+                            table += "<td style=font-size:14px;font-weight:bold;cell>inici</td>";
+                            table += "<td style=font-size:14px;font-weight:bold;cell>fin</td>";
+                            table += "<td style=font-size:14px;font-weight:bold;cell># users</td>";
+                            table += "<td style=font-size:14px;font-weight:bold;cell>users</td>";
+                            table += "</tr>";
+
+                            for (var i = 0; i < data.partides_actives_sw1.length; i++){
+                                table += "<tr style='cellpadding:10;'>";
+                                table += "<td style=font-size:12px;font-weight:bold;color:navy;cell>" + data.partides_actives_sw1[i].id + "</td>";
+                                table += "<td style=font-size:12px;font-weight:bold;color:navy;cell>" + data.partides_actives_sw1[i].estat + "</td>";
+                                table += "<td style=font-size:12px;cell>" + data.partides_actives_sw1[i].dia + "</td>";
+                                table += "<td style=font-size:12px;cell>" + data.partides_actives_sw1[i].data_creacio + "</td>";
+                                table += "<td style=font-size:12px;cell>" + data.partides_actives_sw1[i].data_inicialitzacio + "</td>";
+                                table += "<td style=font-size:12px;cell>" + data.partides_actives_sw1[i].data_finalitzacio + "</td>";
+                                table += "<td style=font-size:12px;cell;font-weight:bold;color:navy;cell>" + data.partides_actives_sw1[i].usuaris_registrats + "</td>";
+                                table += "<td style=font-size:12px;font-weight:bold;color:navy;cell>" + data.partides_actives_sw1[i].users + "</td>";
+                                table += '<td><button onclick="detailPartida(' + data.partides_actives_sw1[i].id + ')" class="bx-push bx bx-redstencil" style="width:30px;height:30px;font-size:14px;padding:0px 0px 0px 0px;">' + "i" + '</button></td>'
+                                table += "</tr>";
+                                if (data.partides_actives_sw1[i].usuaris_registrats > data.partides_actives_sw1[i].users.length
+                                        && data.partides_actives_sw1[i].estat == "JUGANT"
+                                        && data.partides_actives_sw1[i].users.length > 0){
+                                    table+="<tr style='cellpadding:10;'>";
+                                    table+="<td colspan=8 style=font-size:12px;font-weight:bold;color:red;cell>201: Acabant la partida, falta un usuari per abandonar la partida</td>";
+                                    table+="</tr>";
+                                }
+                                if (data.partides_actives_sw1[i].usuaris_registrats > data.partides_actives_sw1[i].users.length
+                                        && data.partides_actives_sw1[i].estat == "JUGANT"
+                                        && data.partides_actives_sw1[i].users.length == 0){
+                                    table+="<tr style='cellpadding:10;'>";
+                                    table+="<td colspan=8 style=font-size:12px;font-weight:bold;color:red;cell>203: No hi ha cap usuari actiu a la partida</td>";
+                                    table+="</tr>";
+                                }
+
+                            }
+
+                            if (data.partides_actives_sw1.length > 1){
+                                table+="<tr style='cellpadding:10;'>";
+                                    table+="<td colspan=8 style=font-size:12px;font-weight:bold;color:red;cell>202: Hi ha massa partides actives a l’hora.</td>";
+                                    table+="</tr>";
+                            }
+
+                        }else{
+                            table+="<tr style='cellpadding:10;'>";
+                            table+="<td colspan=8 style=font-size:12px;font-weight:bold;cell>NO HI HA PARTIDES ACTIVES</td>";
+                            table+="</tr>";
+                        }
+                        if (data.darrera_partida_acabada_sw1.error == 'no_games') {
+                            var text = '-'
+                        } else {
+                            var text = 'Darrera: '
+                                    + data.darrera_partida_acabada_sw1.dia + ', '
+                                    + data.darrera_partida_acabada_sw1.data_finalitzacio + '. '
+                                    + data.darrera_partida_acabada_sw1.usuaris_registrats + ' usuaris'
+                                    + ' (' + data.darrera_partida_acabada_sw1.users + ')'
+                        }
+
+                        table+="<tr style='cellpadding:10;'>";
+                        table+="<td colspan=8 style=font-size:12px;cell>"+text+"</td>";
+                        table+="</tr>";
+
+                        $("#table_snowdrift1").append(table );
+                        
+
+
+
+                        setTimeout(function(){update_estat()}, 500);
+                    },
+                    error: function(data) {
+                        setTimeout(function(){update_estat()}, 500);
+                    }
+                });
+            }
+
+            $(document).ready(function() {
+                update_estat();
+            });
+        </script>
+
+{% endblock %}

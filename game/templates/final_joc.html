@@ -1,0 +1,171 @@
+{% extends "base.html" %}
+
+{% block title %}{% endblock %}
+
+{% block stylesheet %}
+    <link href="/static/css/index.css" rel="stylesheet" media="screen">
+{% endblock %}
+
+{% block content %}
+    <div class="topdiv">
+
+        <div class="fons"></div>
+
+        <div class="agraiment-final" hidden="">{{ text.final_joc.agraiment| safe }}</div>
+        <!--<img class="page_cenefa" src="/static/img/cenefa-vermell-reduced.png" id="page_cenefa"/>-->
+        <div class="capsalera_background"></div>
+        <img class="page_cenefa" src="/static/img/cenefa-blanc-reduced.png" id="page_cenefa"/>
+
+        <div class="final_text1">{{ text.final_joc.text1 }}</div>
+
+        <img src="/static/img/water-logo-vermell-small.png" class="water_logo" id="water_logo" hidden=""/>
+        <img src="/static/img/bread-logo-vermell-small.png" class="bread_logo" id="bread_logo" hidden=""/>
+        <img src="/static/img/kiss-logo-vermell-small.png" class="kiss_logo" id="kiss_logo" hidden=""/>
+        <img src="/static/img/fruits-logo-vermell-small.png" class="fruit_logo" id="fruits_logo" hidden=""/>
+        <img src="/static/img/water-logo-grey-small.png" class="water_logo" id="water_grey_logo" hidden=""/>
+        <img src="/static/img/bread-logo-grey-small.png" class="bread_logo" id="bread_grey_logo" hidden=""/>
+        <img src="/static/img/kiss-logo-grey-small.png" class="kiss_logo" id="kiss_grey_logo" hidden=""/>
+        <img src="/static/img/fruits-logo-grey-small.png" class="fruit_logo" id="fruits_grey_logo" hidden=""/>
+
+
+        <div class="final_text2">{{ text.final_joc.text2 }}</div>
+        <div class="final_variables2"></div>
+
+        <div class="final_text3" id="final_text3">{{ text.final_joc.text3 }}</div>
+
+        <!-- <div class="final_text7">{{ text.final_joc.text7 }}</div> -->
+        <div class="final_text8">{{ text.final_joc.text8 }}</div>
+
+        <div class="final_text4">{{ text.final_joc.text4 | safe}}</div>
+
+        <div class="final_text5">{{ text.final_joc.text5 }}</div>
+
+        <div class="final_text6">{{ text.final_joc.text6 }}</div>
+        <div class="final_variables6"></div>
+
+
+        <!-- Joc del corredor -->
+        <!-- <div class="resum_text resum_dictator">{{ text.final_joc.text_resultat2 }}</div> -->
+        <!-- <div class="resum_valor resum_dictator_valor">{{ resultat_dictator }}</div> -->
+        <!-- Joc del premi -->
+        <!-- <div class="resum_text resum_prisoner ">{{ text.final_joc.text_resultat3 }}</div> -->
+        <!-- <div class="resum_valor resum_prisoner_valor">{{ resultat_prisoner }}</div> -->
+        <!-- Joc del inversor -->
+        <!-- <div class="resum_text resum_trust">{{ text.final_joc.text_resultat4 }}</div> -->
+        <!-- <div class="resum_valor resum_trust_valor">{{ resultat_trust }}</div> -->
+        <!--
+        <div class="resum_text resum_premi">{{ text.final_joc.text_resultat5 }}</div>
+        <div class="resum_valor resum_premi_valor">{{ resultat_premi }}</div>
+         -->
+        <!-- Resultat total  -->
+        <!-- <div class="resum_text resum_total">{{ text.final_joc.text_resultat6 }}</div> -->
+        <!-- <div class="resum_valor resum_total_valor">{{ resultat_total }}</div> -->
+
+        <!-- <div class="resum_text resum_abacus">{{ text.final_joc.text_resultat7 }}</div> -->
+        <!-- <div class="resum_valor resum_abacus_valor">{{ vals }} {{text.final_joc.vals}}</div> -->
+        <!--
+        <!-- <div class="text_correu">{{ text.final_joc.text_correu | safe }}</div>
+        -->
+        <hr class="separador-bottom" />
+
+        <div class="vull-jugar">
+            <form method="post" action="/{{ lang }}/">
+                <button class="bx bx-push bx-redstencil">
+                    {{ text.final_joc.boto }}
+                </button>
+            </form>
+        </div>
+
+        <!--<img id="imatge_logos" src="/static/img/logos/all_logos.png"/>-->
+
+    </div>
+
+{% endblock %}
+
+{% block javascript %}
+    <script>
+
+    $(document).ready(function() {
+        console.log('{{resultats}}')
+        console.log('{{finalitzats}}')
+
+        var text_casetes_acabades = ""
+
+        if ('{{finalitzats.0}}' == 1){ // Prisoner 1 està llest
+            console.log('prisoner 1')
+            text_casetes_acabades = text_casetes_acabades + '{{text.main.joc_1}}' + ' - '
+             $("#water_logo").show();
+             $("#water_grey_logo").hide();
+        }
+        if ('{{finalitzats.1}}' == 1){ // Prisoner 2 està llest
+            console.log('prisoner 2')
+            text_casetes_acabades = text_casetes_acabades + '{{text.main.joc_2}}' + ' - '
+            $("#bread_logo").show();
+            $("#bread_grey_logo").hide();
+        }
+        if ('{{finalitzats.2}}' == 1){ // Snowdrift 1 està llest
+            console.log('snowdrift 1')
+            text_casetes_acabades = text_casetes_acabades + '{{text.main.joc_3}}' + ' - '
+             $("#kiss_logo").show();
+             $("#kiss_grey_logo").hide();
+        }
+        if ('{{finalitzats.3}}' == 1){ // Dictator 1 està llest
+            console.log('dictator 1')
+            text_casetes_acabades = text_casetes_acabades + '{{text.main.joc_4}}' + ' - '
+            $("#fruits_logo").show();
+            $("#fruits_grey_logo").hide();
+        }
+
+        var punts_prisoner1 = (parseFloat('{{resultats.0}}')/parseFloat('{{max.0}}'))*100
+        var punts_prisoner2 = (parseFloat('{{resultats.1}}')/parseFloat('{{max.1}}'))*100
+        var punts_snowdrift1 = (parseFloat('{{resultats.3}}')/parseFloat('{{max.2}}'))*100
+        var punts_dictator1 = (parseFloat('{{resultats.2}}')/parseFloat('{{max.3}}'))*100
+
+
+        $(".final_variables2").text(Math.round(punts_prisoner1 + punts_prisoner2 + punts_dictator1 + punts_snowdrift1) + ' ' +'{{text.common.punts}}')
+        $(".final_variables6").text('{{nickname}}')
+
+         var text_casetes_no_acabades = ""
+
+        if ('{{finalitzats.0}}' == 0){ // Prisoner 1 està llest
+            console.log('prisoner 1')
+            text_casetes_no_acabades = text_casetes_no_acabades + '{{text.main.joc_1}}' + ' - '
+            $("#water_logo").hide();
+            $("#water_grey_logo").show();
+        }
+        if ('{{finalitzats.1}}' == 0){ // Prisoner 2 està llest
+            console.log('prisoner 2')
+            text_casetes_no_acabades = text_casetes_no_acabades + '{{text.main.joc_2}}' + ' - '
+            $("#bread_logo").hide();
+            $("#bread_grey_logo").show();
+        }
+        if ('{{finalitzats.2}}' == 0){ // Dictator 1 està llest
+            console.log('snowdrift 1')
+            text_casetes_no_acabades = text_casetes_no_acabades + '{{text.main.joc_3}}' + ' - '
+            $("#kiss_logo").hide();
+            $("#kiss_grey_logo").show();
+        }
+        if ('{{finalitzats.3}}' == 0){ // Dictator 2 està llest
+            console.log('dictator 1')
+            text_casetes_no_acabades = text_casetes_no_acabades + '{{text.main.joc_4}}' + ' - '
+            $("#fruits_logo").hide();
+            $("#fruits_grey_logo").show();
+        }
+
+        if (('{{finalitzats.0}}' == 1) && ('{{finalitzats.1}}' == 1) && ('{{finalitzats.2}}' == 1) && ('{{finalitzats.3}}' == 1)){ // 4 GAMES
+        //if (('{{finalitzats.0}}' == 1) && ('{{finalitzats.1}}' == 1) && ('{{finalitzats.2}}' == 1)){ // 3 GAMES
+            console.log('tot acabat')
+            $("#final_text3").hide();
+        }else{
+            $("#final_text3").show();
+
+        }
+
+
+
+    });
+
+
+
+    </script>
+{% endblock %}

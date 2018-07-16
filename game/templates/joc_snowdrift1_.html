@@ -1,0 +1,214 @@
+{% extends "base.html" %}
+
+{% block stylesheet %}
+    <link href="/static/css/joc_snowdrift.css" rel="stylesheet" media="screen">
+{% endblock %}
+
+{% block title %}{{ text.joc_snowdrift1.titol1 }} | {{ user.nickname }}{% endblock %}
+
+{% block content %}
+
+    <div class="topdiv-centered">
+
+        <!--<div class="capsalera_background"></div>-->
+        <img src="/static/img/kiss-logo-vermell-small.png" class="page_logo" id="page_logo"/>
+        <!--<div class="page_title">{{ text.joc_snowdrift1.titol }}</div>-->
+        <!--<div class="text_title1">{{ text.joc_snowdrift1.text_title1 | safe }}</div>-->
+        <!--<hr class="separador-top" />-->
+
+        <!-- FASE 1 -->
+
+        <div class="text_intro1">{{ text.joc_snowdrift1.text1 | safe }}</div>
+        <div class="text_intro2">{{ text.joc_snowdrift1.text2 | safe }}</div>
+        <div class="text_intro3">{{ text.joc_snowdrift1.text3 | safe }}</div>
+
+
+        <button id="button-opcio-1" class="button-format-mitja bx bx-push bx-redstencil">{{ text.joc_snowdrift1.text_opcio1 }}</button>
+        <button id="button-opcio-2" class="button-format-mitja bx bx-push bx-redstencil">{{ text.joc_snowdrift1.text_opcio2 }}</button>
+
+        <!-- FASE 2 -->
+        <div class="text_info2" hidden>{{ text.joc_snowdrift1.text_info2 | safe }}</div>
+
+        <div class="esperant_snowdrift" hidden><i id="presentacio_waiting"class="fa fa-spinner fa-spin fa-5x"></i></div>
+        <div class="esperant_snowdrift_text" hidden>{{ text.joc_snowdrift1.esperant_resposta }}</div>
+
+        <div class="seleccio_snowdrift_text" hidden>{{ text.joc_snowdrift1.tu_seleccio }}</div>
+        <div class="seleccio_snowdrift" hidden></div>
+
+
+        <!-- FASE 3 -->
+
+        <div class="text_info3" hidden>{{ text.joc_snowdrift1.text_info3 | safe }}</div>
+
+        <div class="seleccio_snowdrift_rival_text" hidden>{{ text.joc_snowdrift1.ell_seleccio }}</div>
+        <div class="seleccio_snowdrift_rival" hidden></div>
+
+        <div class="text_efecte" hidden></div>
+
+        <div class="missatge_fi" hidden>{{ text.joc_snowdrift.missatge_fi }}</div>
+
+        <hr class="separador-bottom" />
+
+        <div class="page_button_right" hidden>
+            <button id="boto_enquesta" type="button" onclick="location.href='/{{ lang }}/user/final_joc'" name="logout" class="bx bx-push bx-redstencil" >
+                {{ text.joc_snowdrift1.boto_seguent }}
+            </button>
+        </div>
+
+    </div>
+
+{% endblock %}
+
+
+{% block javascript %}
+
+    <script>
+    function button_pressed(value) {
+        $('.button-format-mitja').hide();
+        $('.text_intro1').show();
+        $('.text_intro2').show();
+        $('.text_intro3').show();
+
+        $(".esperant_snowdrift").show();
+        $(".esperant_snowdrift_text").show();
+
+        $(".seleccio_snowdrift_text").hide();
+
+        if (value == 'P'){
+            $(".seleccio_snowdrift").text(' {{ text.joc_snowdrift1.seleccio_peto }}').hide();
+        }
+        if (value == 'G'){
+            $(".seleccio_snowdrift").text(' {{ text.joc_snowdrift1.seleccio_galta }}').hide();
+        }
+
+        enviar_accio({{ user.id }}, value);
+    }
+
+    function isInt(n) {
+        return n % 1 === 0;
+    }
+
+    //Funcio per a enviar la selecció
+    function enviar_accio(user, accio) {
+        $.ajax({
+            url: '/es/ws/enviar_accio_snowdrift1_/'+user+'/'+accio+'/',
+            success: function(data) {
+                console.log(data);
+                if (data.saved == "ok") {
+                    demanar_resultat({{ user.id }});
+                } else {
+                    if (data.error == 'GAME DOES NOT EXIST'){
+                        window.location.href = '/{{ lang }}/user/logout'
+                    }else{
+                        enviar_accio(user, accio);
+                    }
+                }
+            },
+            error: function(){
+                enviar_accio(user, accio);
+            }
+        });
+    }
+
+
+    //Funcio per a obtenir el resultat del torn
+    function demanar_resultat(user) {
+        $.ajax({
+            url: '/es/ws/demanar_resultat_snowdrift1_/'+user+'/',
+            success: function(data) {
+                console.log(data);
+                if (data.correcte) {
+
+
+                    //MOSTRAR FINAL DEL JOC
+                    $(".esperant_snowdrift").hide();
+                    $(".esperant_snowdrift_text").hide();
+                    $(".seleccio_snowdrift_text").show();
+                    $(".seleccio_snowdrift_rival_text").show();
+
+
+                    $(".text_efecte").show();
+
+                    var matrix = {{ matrix }}
+                    var resultat = -1;
+                    var oponent = -1;
+                    var resultat_points = -1
+                    var oponent_points = -1
+
+                    var MAX = data.max_points
+
+                    if (data.seleccio_snowdrift_rival == 'P'){
+                         if (data.seleccio_snowdrift == 'P'){
+                            $(".text_efecte").html(' {{ text.joc_snowdrift1.efecte1 | safe}}').show();
+                            resultat = matrix[0][0];
+                            oponent = matrix[0][1];
+                            resultat_points = (resultat/MAX)*100
+                            oponent_points = (oponent/MAX)*100
+                         $(".seleccio_snowdrift").text(' {{ text.joc_snowdrift1.seleccio_peto }} (' +resultat_points+' {{ text.common.punts }})').show();
+
+                         }else{
+                            $(".text_efecte").html(' {{ text.joc_snowdrift1.efecte2 | safe}}').show();
+                            resultat = matrix[2][0];
+                            oponent = matrix[2][1];
+                            resultat_points = (resultat/MAX)*100
+                            oponent_points = (oponent/MAX)*100
+                            $(".seleccio_snowdrift").text(' {{ text.joc_snowdrift1.seleccio_resultat_galta }} (' +resultat_points+' {{ text.common.punts }})').show();
+                         }
+                         $(".seleccio_snowdrift_rival").html(' {{ text.joc_snowdrift1.seleccio_peto | safe }} (' +oponent_points+' {{ text.common.punts }})').show();
+
+
+                    }
+                    if (data.seleccio_snowdrift_rival == 'G'){
+                        if (data.seleccio_snowdrift == 'P'){
+                            $(".text_efecte").html(' {{ text.joc_snowdrift1.efecte2 | safe}}').show();
+                            resultat = matrix[1][0];
+                            oponent = matrix[1][1];
+                            resultat_points = (resultat/MAX)*100
+                            oponent_points = (oponent/MAX)*100
+                            $(".seleccio_snowdrift").text(' {{ text.joc_snowdrift1.seleccio_peto }} (' +resultat_points+' {{ text.common.punts }})').show();
+
+                         }else{
+                            $(".text_efecte").html(' {{ text.joc_snowdrift1.efecte3 | safe}}').show();
+                            resultat = matrix[3][0];
+                            oponent = matrix[3][1];
+                            resultat_points = (resultat/MAX)*100
+                            oponent_points = (oponent/MAX)*100
+                            $(".seleccio_snowdrift").text(' {{ text.joc_snowdrift1.seleccio_resultat_galta }} (' +resultat_points+' {{ text.common.punts }})').show();
+
+                         }
+                         $(".seleccio_snowdrift_rival").html(' {{ text.joc_snowdrift1.seleccio_resultat_galta | safe}} (' +oponent_points+' {{ text.common.punts }})').show();
+
+                    }
+
+                    $(".page_button_right").show();
+                    //$(".missatge_fi").show();
+
+                } else {
+                    if (data.error == 'GAME DOES NOT EXIST'){
+                        window.location.href = '/{{ lang }}/user/logout'
+                    }else {
+                        setTimeout(function () {
+                            demanar_resultat(user)
+                        }, 500);
+                    }
+                }
+            },
+            error: function(data) {
+                setTimeout(function(){demanar_resultat(user)}, 500);
+            }
+        });
+    }
+
+    $(document).ready(function() {
+
+        $("#button-opcio-1").on("pushed", function(e) { button_pressed('P'); });
+        $("#button-opcio-2").on("pushed", function(e) { button_pressed('G'); });
+
+
+    });
+
+
+
+    </script>
+{% endblock %}
+
