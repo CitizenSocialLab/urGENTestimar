@@ -4,12 +4,10 @@
 
 Experiment designed and implemented to be performed in **FiraTarrega 2017** during the performance [urGENTestimar](https://www.firatarrega.cat/fira/programa/en_2017/33/urgentestimar).
 
-This participatory experiment consist on a set of dilemmas and behavioural games: **Prisoner's Dilemma, Snowdrift Game and Dictator's Game** designed to shed light on the concerns of citizens and collectives of Tàrrega. There are two Prisoner's Dilemma with sharing different basic resources (Bread and Water) and interactions, one Snowdrift (doing the action of Kissing) and one Dictator's Game (sharing Fruit with others).
+This participatory experiment consist on a set of dilemmas presented as behavioural games: **Prisoner's Dilemma, Snowdrift Game and Dictator's Game** designed to shed light on the concerns of citizens and collectives of Tàrrega. There are two Prisoner's Dilemma with sharing different basic resources (Bread and Water), one Snowdrift (doing the action of Kissing) and one Dictator's Game (sharing Fruit with others), all these games are played by 2 individuals.
 
 ## Data ##
 **Vicens J, Cigarini A, Perelló J. Dataset urGENTestimar. 2018. doi:10.5281/zenodo.1308978**  
-
-*More data collected during the experiment will be available in open repositories once the scientific paper will be published.*
 
 ## Derived Scientific Publications ##
 Cite main publication: **Vicens, J., Perelló, J., & Duch, J. (2018). Citizen Social Lab: A digital platform for human behaviour experimentation within a citizen science framework. arXiv preprint arXiv:1807.00037.**
