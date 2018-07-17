@@ -84,6 +84,12 @@ __Step 6: Run Server (Tab 3)__
 Directory: `cd /.../urGENTestimar/ `   
 Runserver: `python manage.py runserver localhost:port`
 
+### Access client ###
+Client application:  
+**http://localhost:port/**  
+ 
+Control and Administration:  
+**http://localhost:port/admin**
 ## Versions ##
 Version 1.0
 
