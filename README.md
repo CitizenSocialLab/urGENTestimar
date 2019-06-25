@@ -6,6 +6,8 @@ Experiment designed and implemented to be performed in **FiraTarrega 2017** duri
 
 This participatory experiment consist on a set of dilemmas presented as behavioural games: **Prisoner's Dilemma, Snowdrift Game and Dictator's Game** designed to shed light on the concerns of citizens and collectives of Tàrrega. There are two Prisoner's Dilemma with sharing different basic resources (Bread and Water), one Snowdrift (doing the action of Kissing) and one Dictator's Game (sharing Fruit with others), all these games are played by 2 individuals.
 
+![](https://github.com/CitizenSocialLab/urGENTestimar/blob/master/screenshots/ca/urgentestimar_ipad.png)
+
 ## Data ##
 **Vicens J, Cigarini A, Perelló J. Dataset urGENTestimar. 2018. doi:10.5281/zenodo.1308978**  
 
