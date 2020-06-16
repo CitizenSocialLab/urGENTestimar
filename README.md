@@ -95,8 +95,6 @@ Version 1.0
 
 ## License ##
 
-CitizenSocialLab | urGENTestimar (c) by Julian Vicens
-
 CitizenSocialLab is licensed under a [GNU Affero General Public License](https://www.gnu.org/licenses/agpl-3.0.txt)
 
 All the contents of urGENTestimar repository are under the license [CC BY-NC-SA license](https://creativecommons.org/licenses/by-nc-sa/4.0/)
