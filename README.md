@@ -103,7 +103,7 @@ All the contents of urGENTestimar repository are under the license [CC BY-NC-SA 
 
 ## Contributors ##
 
-[Julián Vicens](https://github.com/jvicens)
+[Julián Vicens](https://jvicens.github.io/)
 
 ## Contact ##
 
